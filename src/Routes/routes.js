@@ -7,9 +7,9 @@ const { isAuthorized } = require("../Middlewares/isAutherized")
 const { createProduct , fetchAllProducts , fetchOneProduct } = require("../Controllers/productController")
 
 /* GET home page. */
-// router.get('/', function (req, res) {
-//     res.send("ok texted go now --->")
-// });
+router.get('/', function (req, res) {
+    res.send("ok texted go now --->")
+});
 
 
 
