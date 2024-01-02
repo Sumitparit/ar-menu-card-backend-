@@ -37,23 +37,41 @@ const productSchema = new mongoose.Schema({
 
 
 
-    option: [
-        {
-            _id: false,
-
-            optionName: [String, String],
-            // // [key , value] ex : ["color" , "white"]
-            optionVerity: [String, String],
-            // // [key , value] ex : ["RAM-ROM" , "4-64"]
-            optionStock: { type: Number, default: 0 },
-            optionPrice: { type: Number, default: 0 },
-            optionId: {
-                type: String,
-                default: () => uuid.v4()
+    customizations: {
+        sizes: [
+            {
+                name: String,
+                additionalPrice: Number
+            },
+            {
+                name: String,
+                additionalPrice: Number
+            },
+            {
+                name: String,
+                additionalPrice: Number
             }
 
-        }
-    ],
+        ],
+        crusts: [
+            {
+                name: String,
+                additionalPrice: Number
+            },
+
+            {
+                name: String,
+                additionalPrice: Number
+            },
+            {
+                name: String,
+                additionalPrice: Number
+            }
+
+
+        ]
+    },
+
 
 
     model: String,
@@ -76,13 +94,17 @@ const productSchema = new mongoose.Schema({
         }
     },
 
+    totelPurchases: {
+        type: Number,
+        default: 0
+    },
 
     likes: {
         type: Number,
         required: true,
         default: 0
     },
-    
+
     dislikes: {
         type: Number,
         required: true,
