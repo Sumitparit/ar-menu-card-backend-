@@ -94,9 +94,22 @@ const productSchema = new mongoose.Schema({
         }
     },
 
+    isNonVeg : {
+        type : Boolean ,
+        default : false
+    },
+
+    // // This feild will include rank of product.
+    // // If any purchse or review given by user dev will increase by value (code is written like that).
+    // // purchase by value (i think every time 1) and review added then increase by +1.
     totelPurchases: {
         type: Number,
         default: 0
+    },
+
+    productRank : {
+        type : Number,
+        default : 0
     },
 
     likes: {

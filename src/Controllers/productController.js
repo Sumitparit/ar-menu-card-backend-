@@ -14,7 +14,7 @@ exports.createProduct = async function (req, res) {
 
         const createNewProduct = await productModel.create(req.body)
 
-        // console.log(createNewProduct)
+        console.log(createNewProduct)
 
         res.status(201).send({ status: true, message: `Data created successful.`, data: createNewProduct })
 
@@ -33,7 +33,7 @@ exports.createProduct = async function (req, res) {
 exports.fetchAllProducts = async function (req, res) {
     try {
 
-        let findAllProducts = await productModel.find({ isDeleted: false }).select("-_id -__v -updatedAt -createdAt -isDeleted -dislikedUserIds -likedUserIds -dislikes -likes -option")
+        let findAllProducts = await productModel.find({ isDeleted: false }).sort({ totelPurchases : 1 , name : 1 }).select("-_id -__v -updatedAt -createdAt -isDeleted -dislikedUserIds -likedUserIds -dislikes -likes -option")
 
         if (findAllProducts.length <= 0) {
             return res.status(404).send({ status: false, message: `No data found. please connect to developer` })
@@ -61,14 +61,18 @@ exports.fetchOneProduct = async function (req, res) {
 
 
 
-        const fetchProduct = await productModel.findOne({id : productId})
-        .select("-_id -__v -updatedAt -createdAt -isDeleted ")
+        const fetchProduct = await productModel.findOne({ id: productId })
+            .select("-_id -__v -updatedAt -createdAt -isDeleted ")
 
         // // // TODO populate the review section here -------->
 
 
-        if((!fetchProduct)){
+        if ((!fetchProduct)) {
             return res.status(404).send({ status: false, message: `No product found.` })
+        }
+
+        if(fetchProduct.isDeleted){
+            return res.status(404).send({ status: false, message: `No product found.Product is deleted now.` })
         }
 
         res.status(200).send({ status: true, message: `Fetched successfully`, data: fetchProduct })
