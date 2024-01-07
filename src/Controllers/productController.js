@@ -29,11 +29,10 @@ exports.createProduct = async function (req, res) {
 
 
 
-
 exports.fetchAllProducts = async function (req, res) {
     try {
 
-        let findAllProducts = await productModel.find({ isDeleted: false }).sort({ totelPurchases : 1 , name : 1 }).select("-_id -__v -updatedAt -createdAt -isDeleted -dislikedUserIds -likedUserIds -dislikes -likes -option")
+        let findAllProducts = await productModel.find({ isDeleted: false }).sort({ totelPurchases: 1, name: 1 }).select("-_id -__v -updatedAt -createdAt -isDeleted -dislikedUserIds -likedUserIds -dislikes -likes -option")
 
         if (findAllProducts.length <= 0) {
             return res.status(404).send({ status: false, message: `No data found. please connect to developer` })
@@ -47,7 +46,6 @@ exports.fetchAllProducts = async function (req, res) {
     }
 
 }
-
 
 
 
@@ -71,7 +69,7 @@ exports.fetchOneProduct = async function (req, res) {
             return res.status(404).send({ status: false, message: `No product found.` })
         }
 
-        if(fetchProduct.isDeleted){
+        if (fetchProduct.isDeleted) {
             return res.status(404).send({ status: false, message: `No product found.Product is deleted now.` })
         }
 
