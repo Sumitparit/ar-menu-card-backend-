@@ -28,7 +28,6 @@ exports.createProduct = async function (req, res) {
 }
 
 
-
 exports.fetchAllProducts = async function (req, res) {
     try {
 
@@ -46,7 +45,6 @@ exports.fetchAllProducts = async function (req, res) {
     }
 
 }
-
 
 
 exports.fetchOneProduct = async function (req, res) {
