@@ -74,7 +74,10 @@ const productSchema = new mongoose.Schema({
 
 
 
-    model: String,
+    model: {
+        src: String,
+        iosSrc: String
+    },
 
     // // // Default values here ----->
 
@@ -94,9 +97,9 @@ const productSchema = new mongoose.Schema({
         }
     },
 
-    isNonVeg : {
-        type : Boolean ,
-        default : false
+    isNonVeg: {
+        type: Boolean,
+        default: false
     },
 
     // // This feild will include rank of product.
@@ -107,9 +110,9 @@ const productSchema = new mongoose.Schema({
         default: 0
     },
 
-    productRank : {
-        type : Number,
-        default : 0
+    productRank: {
+        type: Number,
+        default: 0
     },
 
     likes: {
