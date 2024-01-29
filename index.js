@@ -56,8 +56,8 @@ app.use(passport.authenticate('session'));
 passport.use("google", new GoogleStrategy({
 
     // // Using in production on my app --->
-    clientID: `${process.env.GOOGLE_CLIENT_ID}`,
-    clientSecret: `${process.env.GOOGLE_CLIENT_SECRET}`,
+    clientID: `${process.env.LOCAL === "LOCAL" ? process.env.GOOGLE_CLIENT_ID_LOACL : process.env.GOOGLE_CLIENT_ID}`,
+    clientSecret: `${process.env.LOCAL === "LOCAL" ? process.env.GOOGLE_CLIENT_SECRET_LOCAL : process.env.GOOGLE_CLIENT_SECRET}`,
     callbackURL: `${process.env.BACKEND_URL}/auth/google/callback`,
 
     // // // Credential for laocal --->
@@ -90,15 +90,41 @@ passport.use("google", new GoogleStrategy({
 
         // let createOrFindUser = await userModel.
 
-        let newUserDataObj = { email: email, firstName: firstName, lastName: lastName, profilePic: photos[0].value  }
 
-        let userProfile = await userModel.findOneAndUpdate(
-            { email: email },
-            newUserDataObj,
-            { new: true, upsert: true }
-        ).lean()
 
+        // // // This will store data -->
+        let userProfile;
+
+
+        // // // Checking user is present or not --->
+        let checkUserWithEmail = await userModel.findOne({ email: email })
+
+        if (checkUserWithEmail) {
+
+            userProfile = checkUserWithEmail
+
+        } else {
+
+            let newUserDataObj = {
+                email: email,
+                firstName: firstName,
+                lastName: lastName,
+                profilePic: photos[0].value,
+            }
+
+            userProfile = await userModel.create(newUserDataObj)
+  
+        }
+ 
+
+        // let userProfile = await userModel.findOneAndUpdate(
+        //   { email: email },
+        //   newUserDataObj,
+        //   { new: true, upsert: true }
+        // ).lean()
+        // // // Below object to check only ------>
         // console.log(userProfile)
+
 
 
         // // // Create JWT Token, store UUID id of user inside it.
@@ -167,7 +193,40 @@ app.use(function (req, res, next) {
 
 let PORT = process.env.PORT || 3000
 
-app.listen(PORT, () => { console.log(`Express app runing at ${PORT}`) })
+
+
+
+const http = require('http');
+const socketIo = require('socket.io');
+
+
+const server = http.createServer(app);
+const io = socketIo(server);
+
+
+
+server.listen(PORT, () => { console.log(`Express app runing at ${PORT}`) })
+
+
+
+
+// // // All Socket io code here ------->
+
+// // // Stop IO code for now, work on this letar ---->
+
+// io.on('connection', (socket) => {
+
+//     // console.log(socket)
+
+//     console.log('New client connected');
+
+//     socket.on('disconnect', () => {
+//         console.log('Client disconnected');
+//     });
+
+//     // Additional event listeners here
+// });
+
 
 
 

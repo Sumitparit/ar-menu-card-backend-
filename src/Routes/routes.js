@@ -6,6 +6,9 @@ const { isAuthorized } = require("../Middlewares/isAutherized")
 
 const { createProduct , fetchAllProducts , fetchOneProduct } = require("../Controllers/productController")
 
+const { createNewOrder } =  require("../Controllers/orderController")
+
+
 /* GET home page. */
 router.get('/', function (req, res) {
     res.send("ok texted go now --->")
@@ -26,6 +29,8 @@ router.get("/all-product" , fetchAllProducts)
 router.get("/one-product/:productId" , fetchOneProduct)
 
 
+
+// // // User Apis -------------------->
 
 
 // // // Routes for login by Google ----->
@@ -97,7 +102,6 @@ router.get("/login/failed", (req, res) => {
 router.get("/userDataByToken", isAuthorized, (req, res) => {
 
     try {
-
         let userData = req.tokenUserData
         res.status(200).send({ status: true, data: userData, token : userData.token ,  message: "User login successful." })
 
@@ -108,6 +112,17 @@ router.get("/userDataByToken", isAuthorized, (req, res) => {
     }
 
 })
+
+
+
+
+
+
+// // // Order Api --------------->
+
+router.post("/createNewOrder" , isAuthorized , createNewOrder)
+
+
 
 
 
