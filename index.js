@@ -113,9 +113,9 @@ passport.use("google", new GoogleStrategy({
             }
 
             userProfile = await userModel.create(newUserDataObj)
-  
+
         }
- 
+
 
         // let userProfile = await userModel.findOneAndUpdate(
         //   { email: email },
@@ -203,6 +203,7 @@ const socketIo = require('socket.io');
 const server = http.createServer(app);
 const io = socketIo(server);
 
+const { getUserDataFromToken } = require("./src/Middlewares/isAutherized")
 
 
 server.listen(PORT, () => { console.log(`Express app runing at ${PORT}`) })
@@ -214,18 +215,105 @@ server.listen(PORT, () => { console.log(`Express app runing at ${PORT}`) })
 
 // // // Stop IO code for now, work on this letar ---->
 
-// io.on('connection', (socket) => {
 
-//     // console.log(socket)
+// const userModel = require("./src/Models/userModel")
 
-//     console.log('New client connected');
 
-//     socket.on('disconnect', () => {
-//         console.log('Client disconnected');
-//     });
 
-//     // Additional event listeners here
-// });
+
+
+
+io.on('connection', async (socket) => {
+
+    // console.log(socket)
+
+
+    // console.log(socket.handshake.headers.cookie)
+    // console.log(socket.handshake.headers.cookie.split("="))
+
+
+    let userData = false
+
+    if (socket.handshake.headers.cookie) {
+
+        let allCookies = socket.handshake.headers.cookie.split(";")
+
+        // console.log(allCookies)
+
+        let token = false
+
+        for (let singleCookei of allCookies) {
+            // console.log(singleCookei.split("="))
+
+            let arrOfCookie = singleCookei.split("=")
+
+            if (arrOfCookie[0] === "token") {
+                token = arrOfCookie[1]
+                break
+            }
+
+        }
+
+        userData = await getUserDataFromToken(token)
+    }
+
+
+    if (userData) {
+        socket.join(userData.id);
+
+
+        if (userData.role === 'chef') {
+            socket.join('chefs');
+        }
+
+        console.log('New client connected', userData.id, "✅");
+    } else {
+        console.log('New client connected', "✅");
+    }
+
+
+
+    // const userId = getUserIdFromSocket(socket); // Implement this function
+
+    // console.log(userId)
+
+    // socket.join(userId);
+
+
+
+
+    // // // Getting order ------->
+
+    socket.on('new-order', (order) => {
+        // Emit to all chefs
+
+        // console.log("Order Data ------> ", order)
+
+        let userId = order.userId
+
+        io.to(userId).emit('order-received', { data: order, message: "Order done✅" });
+
+        // // // now sending msg to all chefs -------->
+        /**
+         * IDEA is that only chef user have access to read chef events --->
+         * if added in front end --->
+         */
+
+
+        io.to('chefs').emit('chef-order-recived', { data: order, message: "New order recived." });
+
+        console.log("order proccess done --->")
+    });
+
+
+
+
+    socket.on('disconnect', () => {
+        console.log('Client disconnected');
+    });
+
+    // Additional event listeners here
+});
 
 
 

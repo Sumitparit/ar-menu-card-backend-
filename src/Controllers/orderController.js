@@ -47,7 +47,15 @@ async function createNewOrder(req, res) {
 
         let createNewOrder = await orderModel.create(req.body)
 
-        // console.log(typeof(createNewOrder.orderDate))
+
+        // // // push order _id into user data --->
+
+        getUserDetails.orders.unshift(createNewOrder._id)
+
+        await getUserDetails.save()
+
+
+        // console.log(getUserDetails)
 
 
         return res.status(201).send({ status: true, message: "New order created.", data: createNewOrder })

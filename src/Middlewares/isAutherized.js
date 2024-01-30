@@ -76,7 +76,16 @@ exports.isAuthorized = async function (req, res, next) {
 
             // // Set user data in req -------->
 
-            req.tokenUserData = { token : token , id: findUser.id,  firstName : findUser.firstName , lastName : findUser.lastName , profilePic: findUser.profilePic , email : findUser.email , role : findUser.role , userId : findUser._id}
+            req.tokenUserData = {
+                token: token,
+                id: findUser.id,
+                firstName: findUser.firstName,
+                lastName: findUser.lastName,
+                profilePic: findUser.profilePic,
+                email: findUser.email,
+                role: findUser.role,
+                userId: findUser._id
+            }
 
 
             // // // Now here you can call then next route ------>
@@ -89,6 +98,56 @@ exports.isAuthorized = async function (req, res, next) {
     } catch (err) {
         return res.status(500).send({ status: false, message: err.message })
     }
+
+}
+
+
+
+
+
+
+
+exports.getUserDataFromToken = async function (token) {
+
+    let verifyToken = false;
+
+    if (!token) return verifyToken
+
+    try {
+        verifyToken = await jwt.verify(token, `${process.env.JWT_SECRET_KEY}`)
+
+        // console.log(verifyToken)
+    } catch (err) {
+        // console.log(err.message)
+
+
+        return verifyToken
+    }
+
+
+
+    if (Object.keys(verifyToken).length > 0) {
+
+        let userId = verifyToken.id
+
+        let findUser = await userModel.findOne({ id: userId })
+
+        if (!findUser) {
+            return res.status(401).send({ status: false, message: "Data in token is bad or inomplete)" })
+        }
+
+
+
+        verifyToken = {
+            id: findUser.id,
+            role: findUser.role,
+        }
+
+    }
+
+
+
+    return verifyToken
 
 }
 

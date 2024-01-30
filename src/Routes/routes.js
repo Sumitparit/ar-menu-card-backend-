@@ -8,6 +8,8 @@ const { createProduct , fetchAllProducts , fetchOneProduct } = require("../Contr
 
 const { createNewOrder } =  require("../Controllers/orderController")
 
+const {getUserData} = require("../Controllers/userController")
+
 
 /* GET home page. */
 router.get('/', function (req, res) {
@@ -99,19 +101,7 @@ router.get("/login/failed", (req, res) => {
 
 // // Check user data token --->
 
-router.get("/userDataByToken", isAuthorized, (req, res) => {
-
-    try {
-        let userData = req.tokenUserData
-        res.status(200).send({ status: true, data: userData, token : userData.token ,  message: "User login successful." })
-
-    }
-    catch (err) {
-        console.log(err.message)
-        return res.status(500).send({ status: false, message: `Error by server (${err.message})` })
-    }
-
-})
+router.get("/userDataByToken", isAuthorized, getUserData)
 
 
 
