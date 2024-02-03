@@ -242,7 +242,7 @@ io.on('connection', async (socket) => {
     // console.log(socket)
 
 
-    console.log(socket.handshake.headers.cookie)
+    console.log(socket.handshake.headers.cookie)    
     // console.log(socket.handshake.headers.cookie.split("="))
 
 
