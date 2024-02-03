@@ -19,7 +19,7 @@ const orderSchema = new mongoose.Schema({
 
     customer: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
 
-    status: { type: String, required: true, enum: ["RECEIVED", "PROCESSING", "ON_TABLE", "COMPLETED", 'NOT_COMPLETED'], default: "RECEIVED" },
+    status: { type: String, required: true, enum: ["RECEIVED", "PROCESSING", "ON_TABLE", "COMPLETED", 'CANCELED'], default: "RECEIVED" },
 
 }, { timestamps: true })
 

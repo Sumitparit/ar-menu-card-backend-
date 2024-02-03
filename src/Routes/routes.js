@@ -2,13 +2,16 @@
 const router = require("express").Router()
 const passport = require('passport');
 
-const { isAuthorized } = require("../Middlewares/isAutherized")
+const { isAuthorized, isChef } = require("../Middlewares/isAutherized")
 
-const { createProduct , fetchAllProducts , fetchOneProduct } = require("../Controllers/productController")
+const { createProduct, fetchAllProducts, fetchOneProduct } = require("../Controllers/productController")
 
-const { createNewOrder } =  require("../Controllers/orderController")
+const { createNewOrder } = require("../Controllers/orderController")
 
-const {getUserData} = require("../Controllers/userController")
+const { getUserData } = require("../Controllers/userController")
+
+const { getAllCurrentOrders , updateOrderData } = require("../Controllers/chefController")
+
 
 
 /* GET home page. */
@@ -22,18 +25,17 @@ router.get('/', function (req, res) {
 
 // // // Create product ------->
 
-router.post("/create-product" , createProduct)
+router.post("/create-product", createProduct)
 
 
-router.get("/all-product" , fetchAllProducts)
+router.get("/all-product", fetchAllProducts)
 
 
-router.get("/one-product/:productId" , fetchOneProduct)
+router.get("/one-product/:productId", fetchOneProduct)
 
 
 
 // // // User Apis -------------------->
-
 
 // // // Routes for login by Google ----->
 // // // Scope should given which scope of data you want to get like :- email and profile --->
@@ -100,20 +102,21 @@ router.get("/login/failed", (req, res) => {
 
 
 // // Check user data token --->
-
 router.get("/userDataByToken", isAuthorized, getUserData)
 
 
 
-
-
-
 // // // Order Api --------------->
-
-router.post("/createNewOrder" , isAuthorized , createNewOrder)
-
+router.post("/createNewOrder", isAuthorized, createNewOrder)
 
 
+
+
+// // // Chef Apis ------------------>
+router.get("/getAllCurrentOrders", isAuthorized, isChef, getAllCurrentOrders)
+
+
+router.post("/updateOrderData" , isAuthorized , updateOrderData)
 
 
 

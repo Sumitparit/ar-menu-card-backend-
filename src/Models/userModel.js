@@ -39,13 +39,16 @@ const userSchema = new mongoose.Schema({
         ref: "order"
     },
 
+    notification: {
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: "notification"
+    },
+
 
     carts: {
         type: [mongoose.Schema.Types.ObjectId],
         ref: "cart"
     },
-
-
 
 
 }, { timestamps: true })

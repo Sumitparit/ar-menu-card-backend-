@@ -12,7 +12,21 @@ exports.getUserData = async function (req, res) {
             .populate({
                 path: 'orders',
                 select: "-__v -updatedAt -createdAt -_id",
+                options: {
+                    // limit: 10,
+                    sort: { createdAt: -1 },
+                }
                 // // // Check sort here ( Yes working but not using becouse of unshift ) ---->
+            })
+            .populate({
+                // strictPopulate: false,
+                path: "notification",
+                select: "-__v -updatedAt -createdAt -_id",
+                options: {
+                    limit: 7,
+                    sort: { createdAt: -1 },
+                    // skip: req.params.pageIndex * 2
+                }
             })
             .select(" -__v -updatedAt -createdAt -_id -address -password ")
 

@@ -11,13 +11,11 @@ async function createNewOrder(req, res) {
     try {
 
 
-
         // console.log(req.body)
 
         const { tableNumber, totalPrice, cartData, userId, status } = req.body
 
         if (!tableNumber || !totalPrice || !cartData || !userId || !status) return res.status(400).send({ status: false, message: "All feilds are mandatory. Check the controller" })
-
 
         // // // Authorisation to create new order ---->
 
@@ -47,10 +45,11 @@ async function createNewOrder(req, res) {
 
         let createNewOrder = await orderModel.create(req.body)
 
+        // console.log(createNewOrder)
 
         // // // push order _id into user data --->
 
-        getUserDetails.orders.unshift(createNewOrder._id)
+        getUserDetails.orders.push(createNewOrder._id)
 
         await getUserDetails.save()
 
@@ -62,6 +61,9 @@ async function createNewOrder(req, res) {
 
     }
     catch (err) {
+
+        // console.log(err)
+
         return res.status(500).send({ status: false, message: `Server Error. ${err.message}` })
     }
 

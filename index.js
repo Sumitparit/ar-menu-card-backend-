@@ -195,10 +195,10 @@ let PORT = process.env.PORT || 3000
 
 
 
-
+const uuid = require("uuid")
 const http = require('http');
 const socketIo = require('socket.io');
-
+const notificatinModel = require("./src/Models/notificationModel")
 
 const server = http.createServer(app);
 const io = socketIo(server);
@@ -217,6 +217,20 @@ server.listen(PORT, () => { console.log(`Express app runing at ${PORT}`) })
 
 
 // const userModel = require("./src/Models/userModel")
+
+
+
+// // // A fn() to carete new notification here ---->
+
+function createNewNotiFormate(msg, orderId) {
+    return {
+        message: `${msg}`,
+        orderId: `${orderId}`,
+        id: `${uuid.v4()}`,
+        notificationDate: Date.now(),
+        isDeleted: false
+    }
+}
 
 
 
@@ -264,18 +278,21 @@ io.on('connection', async (socket) => {
 
         if (userData.role === 'chef') {
             socket.join('chefs');
+            console.log(`The chef(${userData.firstName}) connected ✅`);
+        } else {
+            console.log(`New client(${userData.firstName}) connected ✅`);
         }
 
-        console.log('New client connected', userData.id, "✅");
+
     } else {
-        console.log('New client connected', "✅");
+        console.log(`New client connected ✅`);
     }
 
 
 
     // const userId = getUserIdFromSocket(socket); // Implement this function
 
-    // console.log(userId)
+    // console.log("userId")
 
     // socket.join(userId);
 
@@ -283,27 +300,164 @@ io.on('connection', async (socket) => {
 
 
     // // // Getting order ------->
-
-    socket.on('new-order', (order) => {
+    socket.on('new-order', async (order) => {
         // Emit to all chefs
 
         // console.log("Order Data ------> ", order)
 
         let userId = order.userId
 
-        io.to(userId).emit('order-received', { data: order, message: "Order done✅" });
+        // io.to(userId).emit('order-received-done', { data: order, message: "Order done✅", id: uuid.v4(), notificationDate: Date.now() });
+
+        // // // A Back notifiaction to user --->
+        io.to(userId).emit('order-received-done', { data: order, ...createNewNotiFormate("Order done✅", order.id) });
+
+
+
+
+        // // // Notification structure ----->
+        // id : "1124dd83-1c64-4157-8efc-61ff5184931e"
+        // message :  "Order done✅"
+        // notificationDate : "2024-01-31T13:04:31.470Z"
+
+
+
+
+        // // // Sending msg to all chefs ---->
+
+        // // // Now i'm sending a message to chef channel, there all chefs are connected --->
+        // io.to('chefs').emit('chef-order-recived', { data: order, message: "New order recived.", id: uuid.v4(), notificationDate: Date.now(), isDeleted: false, orderId: order.id });
+        io.to('chefs').emit('chef-order-recived', { data: order, ...createNewNotiFormate("New order recived.", order.id) });
+
+
+
+        // // // Code to save data into data base ------>
+        // // // ToDO now save the message and time for notification --->
+        // // // If user id is present then save into user data --->
+        if (userId) {
+
+            let orderDoneMsg = 'Order send to kitchen✅'
+
+            // let saveNotificaton = await notificatinModel.create({ message: orderDoneMsg, id: order.id })
+            let saveNotificaton = await notificatinModel.create(createNewNotiFormate(orderDoneMsg, order.id))
+
+            // console.log(saveNotificaton)
+
+            let findUserData = await userModel.findOne({ id: userId })
+
+            if (findUserData) {
+
+                if (findUserData.notification) {
+                    findUserData.notification.push(saveNotificaton._id)
+                }
+                else {
+                    findUserData.notification = [saveNotificaton._id]
+                }
+
+                await findUserData.save()
+
+                // console.log(logToCheck)
+
+            }
+
+        }
+
 
         // // // now sending msg to all chefs -------->
-        /**
-         * IDEA is that only chef user have access to read chef events --->
-         * if added in front end --->
-         */
 
 
-        io.to('chefs').emit('chef-order-recived', { data: order, message: "New order recived." });
-
-        console.log("order proccess done --->")
+        // console.log("order proccess done --->")
     });
+
+
+
+
+    // // // This event started by chef to give notification about update order status.
+
+    socket.on('update-order-status', async (order) => {
+
+
+        console.log("Getting notification for order" , order)
+
+
+
+        let userId = order.userId
+
+        let statusOfOrder = order.status
+
+        let orderDoneMsg = 'Status of order changed.'
+
+        switch (statusOfOrder) {
+            case "RECEIVED":
+                orderDoneMsg = "Order recived.✅"
+                break;
+
+            case "PROCESSING":
+                orderDoneMsg = "Order Processing now.⌛"
+                break;
+
+            case "ON_TABLE":
+                orderDoneMsg = "Order on your table.🍽️"
+                break;
+
+            case "COMPLETED":
+                orderDoneMsg = "Order Completed.✅"
+                break;
+
+            case "CANCELED":
+                orderDoneMsg = "Order canceled.❌"
+                break;
+
+            default:
+                break;
+        }
+
+
+        // console.log(orderDoneMsg)
+
+        if (userId) {
+
+
+
+            // let saveNotificaton = await notificatinModel.create({ message: orderDoneMsg, id: order.id })
+            let saveNotificaton = await notificatinModel.create(createNewNotiFormate(orderDoneMsg, order.id))
+
+            // console.log(saveNotificaton)
+
+            let findUserData = await userModel.findOne({ id: userId })
+
+            if (findUserData) {
+
+                if (findUserData.notification) {
+                    findUserData.notification.push(saveNotificaton._id)
+                }
+                else {
+                    findUserData.notification = [saveNotificaton._id]
+                }
+
+                await findUserData.save()
+
+                // console.log(logToCheck)
+
+            }
+
+        }
+
+
+
+        // // // Notification to user --->
+        io.to(userId).emit('update-order-status-user', { data: order, ...createNewNotiFormate("Order done✅", order.id) });
+
+
+
+        // // // Back to chef (notification) ---->
+        io.to('chefs').emit('update-order-status-chef', { data: order, ...createNewNotiFormate("New order recived.", order.id) });
+
+
+        // console.log(order)
+        // console.log("Proccess done ....")
+
+    })
 
 
 
