@@ -240,7 +240,7 @@ io.on('connection', async (socket) => {
     console.log("socket info ---> ", socket)
 
 
-    console.log(socket.handshake.headers.cookie)
+    // console.log(socket.handshake.headers.cookie)
     // console.log(socket.handshake.headers.cookie.split("="))
 
 
@@ -278,8 +278,11 @@ io.on('connection', async (socket) => {
 
         let token = false
 
-        if (socket.auth && socket.auth.token) {
-            token = socket.auth.token
+        // console.log(socket.handshake.auth.token)
+
+        if (socket.handshake && socket.handshake.auth && socket.handshake.auth.token) {
+
+            token = socket.handshake.auth.token
             userData = await getUserDataFromToken(token)
         }
 
@@ -288,12 +291,13 @@ io.on('connection', async (socket) => {
 
 
 
+    console.log(userData)
+
 
 
 
     if (userData) {
         socket.join(userData.id);
-
 
         if (userData.role === 'chef') {
             socket.join('chefs');
