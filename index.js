@@ -246,7 +246,11 @@ io.on('connection', async (socket) => {
 
     let userData = false
 
+
+    // // // Getting token in socket variabe ---->
+
     if (socket.handshake.headers.cookie) {
+        // // // If token coming in cookie -------->
 
         let allCookies = socket.handshake.headers.cookie.split(";")
 
@@ -268,6 +272,23 @@ io.on('connection', async (socket) => {
 
         userData = await getUserDataFromToken(token)
     }
+    else {
+
+        // // // Sending cookie manually in auth of socket
+
+        let token = false
+
+        if (socket.auth && socket.auth.token) {
+            token = socket.auth.token
+            userData = await getUserDataFromToken(token)
+        }
+
+    }
+
+
+
+
+
 
 
     if (userData) {
