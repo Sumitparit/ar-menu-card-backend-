@@ -235,14 +235,12 @@ function createNewNotiFormate(msg, orderId) {
 
 
 
-
-
 io.on('connection', async (socket) => {
 
-    // console.log(socket)
+    console.log("socket info ---> ", socket)
 
 
-    console.log(socket.handshake.headers.cookie)    
+    console.log(socket.handshake.headers.cookie)
     // console.log(socket.handshake.headers.cookie.split("="))
 
 
@@ -377,7 +375,7 @@ io.on('connection', async (socket) => {
     socket.on('update-order-status', async (order) => {
 
 
-        console.log("Getting notification for order" , order)
+        console.log("Getting notification for order", order)
 
 
 
