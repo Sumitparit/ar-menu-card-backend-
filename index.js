@@ -237,7 +237,7 @@ function createNewNotiFormate(msg, orderId) {
 
 io.on('connection', async (socket) => {
 
-    console.log("socket info ---> ", socket)
+    // console.log("socket info ---> ", socket)
 
 
     // console.log(socket.handshake.headers.cookie)
@@ -289,11 +289,7 @@ io.on('connection', async (socket) => {
     }
 
 
-
-
-    console.log(userData)
-
-
+    // console.log(userData)
 
 
     if (userData) {
