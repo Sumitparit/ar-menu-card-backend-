@@ -8,9 +8,9 @@ const { createProduct, fetchAllProducts, fetchOneProduct } = require("../Control
 
 const { createNewOrder } = require("../Controllers/orderController")
 
-const { getUserData } = require("../Controllers/userController")
+const { getUserData, updateManyNotiToSeen } = require("../Controllers/userController")
 
-const { getAllCurrentOrders , updateOrderData } = require("../Controllers/chefController")
+const { getAllCurrentOrders, updateOrderData } = require("../Controllers/chefController")
 
 
 
@@ -104,6 +104,8 @@ router.get("/login/failed", (req, res) => {
 // // Check user data token --->
 router.get("/userDataByToken", isAuthorized, getUserData)
 
+router.put("/updateManyNotiToSeen", isAuthorized, updateManyNotiToSeen)
+
 
 
 // // // Order Api --------------->
@@ -116,7 +118,7 @@ router.post("/createNewOrder", isAuthorized, createNewOrder)
 router.get("/getAllCurrentOrders", isAuthorized, isChef, getAllCurrentOrders)
 
 
-router.post("/updateOrderData" , isAuthorized , updateOrderData)
+router.post("/updateOrderData", isAuthorized, updateOrderData)
 
 
 

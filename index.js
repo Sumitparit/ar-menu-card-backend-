@@ -222,13 +222,13 @@ server.listen(PORT, () => { console.log(`Express app runing at ${PORT}`) })
 
 // // // A fn() to carete new notification here ---->
 
-function createNewNotiFormate(msg, orderId) {
+function createNewNotiFormate(msg, orderId, userId) {
     return {
         message: `${msg}`,
         orderId: `${orderId}`,
+        userId: `${userId}`,
         id: `${uuid.v4()}`,
         notificationDate: Date.now(),
-        isDeleted: false
     }
 }
 
@@ -329,7 +329,7 @@ io.on('connection', async (socket) => {
         // io.to(userId).emit('order-received-done', { data: order, message: "Order done✅", id: uuid.v4(), notificationDate: Date.now() });
 
         // // // A Back notifiaction to user --->
-        io.to(userId).emit('order-received-done', { data: order, ...createNewNotiFormate("Order done✅", order.id) });
+        io.to(userId).emit('order-received-done', { data: order, ...createNewNotiFormate("Order done✅", order.id, userId) });
 
 
 
@@ -346,7 +346,7 @@ io.on('connection', async (socket) => {
 
         // // // Now i'm sending a message to chef channel, there all chefs are connected --->
         // io.to('chefs').emit('chef-order-recived', { data: order, message: "New order recived.", id: uuid.v4(), notificationDate: Date.now(), isDeleted: false, orderId: order.id });
-        io.to('chefs').emit('chef-order-recived', { data: order, ...createNewNotiFormate("New order recived.", order.id) });
+        io.to('chefs').emit('chef-order-recived', { data: order, ...createNewNotiFormate("New order recived.", order.id, userId) });
 
 
 
@@ -358,7 +358,7 @@ io.on('connection', async (socket) => {
             let orderDoneMsg = 'Order send to kitchen✅'
 
             // let saveNotificaton = await notificatinModel.create({ message: orderDoneMsg, id: order.id })
-            let saveNotificaton = await notificatinModel.create(createNewNotiFormate(orderDoneMsg, order.id))
+            let saveNotificaton = await notificatinModel.create(createNewNotiFormate(orderDoneMsg, order.id, userId))
 
             // console.log(saveNotificaton)
 
@@ -396,7 +396,7 @@ io.on('connection', async (socket) => {
     socket.on('update-order-status', async (order) => {
 
 
-        console.log("Getting notification for order", order)
+        // console.log("Getting notification for order", order)
 
 
 
@@ -439,7 +439,7 @@ io.on('connection', async (socket) => {
 
 
             // let saveNotificaton = await notificatinModel.create({ message: orderDoneMsg, id: order.id })
-            let saveNotificaton = await notificatinModel.create(createNewNotiFormate(orderDoneMsg, order.id))
+            let saveNotificaton = await notificatinModel.create(createNewNotiFormate(orderDoneMsg, order.id, userId))
 
             // console.log(saveNotificaton)
 
@@ -465,12 +465,12 @@ io.on('connection', async (socket) => {
 
 
         // // // Notification to user --->
-        io.to(userId).emit('update-order-status-user', { data: order, ...createNewNotiFormate("Order done✅", order.id) });
+        io.to(userId).emit('update-order-status-user', { data: order, ...createNewNotiFormate("Order done✅", order.id, userId) });
 
 
 
         // // // Back to chef (notification) ---->
-        io.to('chefs').emit('update-order-status-chef', { data: order, ...createNewNotiFormate("New order recived.", order.id) });
+        io.to('chefs').emit('update-order-status-chef', { data: order, ...createNewNotiFormate("New order recived.", order.id, userId) });
 
 
         // console.log(order)

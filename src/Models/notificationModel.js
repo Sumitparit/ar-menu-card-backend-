@@ -12,15 +12,25 @@ const notificationSchema = new mongoose.Schema({
 
     notificationDate: { type: Date, default: Date.now() },
 
-    isDeleted : {
-        type : Boolean ,
-        default : false
-    } ,
+    isDeleted: {
+        type: Boolean,
+        default: false
+    },
 
-    orderId :{
-        type : String ,
-        default : "null"
-    } 
+    orderId: {
+        type: String,
+        default: "null"
+    },
+
+    userId: {
+        type: String,
+        default: "null"
+    },
+
+    isSeen: {
+        type: Boolean,
+        default: false
+    }
 
 }, { timestamps: true })
 

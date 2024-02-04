@@ -13,7 +13,9 @@ exports.getAllCurrentOrders = async function (req, res) {
 
         let validStatusOfOrder = ["RECEIVED", "PROCESSING"]
 
-        let getCurOrderData = await orderModel.find({ status: { $in: validStatusOfOrder } }).select("-__v -updatedAt -createdAt -_id")
+        let getCurOrderData = await orderModel.find({ status: { $in: validStatusOfOrder } })
+            .sort({ createdAt: -1 })
+            .select("-__v -updatedAt -createdAt -_id")
 
         // console.log(getCurOrderData)
 
@@ -63,7 +65,7 @@ exports.updateOrderData = async function (req, res) {
         }
 
 
-        
+
         // console.log(findOrderData)
         // console.log(updatedData)
 
