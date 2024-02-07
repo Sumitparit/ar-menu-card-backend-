@@ -4,8 +4,6 @@ const orderModel = require("../Models/orderModel")
 const userModel = require("../Models/userModel")
 
 
-
-
 async function createNewOrder(req, res) {
 
     try {
@@ -68,7 +66,6 @@ async function createNewOrder(req, res) {
     }
 
 }
-
 
 
 module.exports = { createNewOrder }
