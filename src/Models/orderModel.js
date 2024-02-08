@@ -6,16 +6,19 @@ const uuid = require("uuid")
 const orderSchema = new mongoose.Schema({
     id: { type: String, default: () => uuid.v4() },
 
-    tableNumber: { type: Number, default: 0 , required : true },
+    tableNumber: { type: Number, default: 0, required: true },
 
     orderDate: { type: Date, default: Date.now },
-    preparationTime  : { type: Date, default: Date.now },
+
+    preparationTime: { type: Date, default: Date.now },
 
     totalPrice: { type: Number, required: true, trim: true },
 
     cartData: { type: Array, required: true },
 
     userId: { type: String, required: true },
+
+    currentOrder: { type: Boolean, default: false },
 
     customer: { type: mongoose.Schema.Types.ObjectId, ref: 'user', required: true },
 

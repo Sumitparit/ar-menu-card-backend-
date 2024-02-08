@@ -25,37 +25,54 @@ async function createNewOrder(req, res) {
 
         if (userIdInToken.toString() !== userId.toString()) return res.status(403).send({ status: false, message: "Forbidden to create the order." })
 
-
         let getUserDetails = await userModel.findOne({ id: userId })
 
         if (!getUserDetails) return res.status(400).send({ status: false, message: "No user found with given Id." })
 
 
-        // // // Adding more keys in req.body
-        req.body.customer = getUserDetails._id
-        
-        let dateNow = Date.now()
-        req.body.orderDate = dateNow
-        req.body.preparationTime = dateNow
+        // // // Now here we can put some current oder logic ---------->
 
-        // console.log(req.body)
+        let findCurrentOrder = await orderModel.findOne({ userId: userId, currentOrder: true })
+
+        // console.log('Current order ---> ', findCurrentOrder)
 
 
-        let createNewOrder = await orderModel.create(req.body)
+        if (findCurrentOrder) {
 
-        // console.log(createNewOrder)
+            findCurrentOrder.cartData = [...cartData, ...findCurrentOrder.cartData]
 
-        // // // push order _id into user data --->
+            let updatedOrderData = await findCurrentOrder.save()
 
-        getUserDetails.orders.push(createNewOrder._id)
+            return res.status(200).send({ status: true, message: "New item added in current order.", data: updatedOrderData })
 
-        await getUserDetails.save()
+        } else {
 
+            // // // Adding more keys in req.body
+            req.body.customer = getUserDetails._id
 
-        // console.log(getUserDetails)
+            let dateNow = Date.now()
+            req.body.orderDate = dateNow
+            req.body.preparationTime = dateNow
+            req.body.currentOrder = true
 
+            // console.log(req.body)
 
-        return res.status(201).send({ status: true, message: "New order created.", data: createNewOrder })
+            let createNewOrder = await orderModel.create(req.body)
+
+            // console.log(createNewOrder)
+            // // // push order _id into user data --->
+
+            getUserDetails.orders.push(createNewOrder._id)
+
+            await getUserDetails.save()
+
+            // console.log(getUserDetails)
+
+            return res.status(201).send({ status: true, message: "New order created.", data: createNewOrder })
+        }
+
+        // // // final res if no give by some reason.
+        res.status(200).send({ status: true, message: "Something breaks." })
 
     }
     catch (err) {
