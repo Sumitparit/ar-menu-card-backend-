@@ -102,6 +102,11 @@ const productSchema = new mongoose.Schema({
         default: false
     },
 
+    timeRequired: {
+        type: String,
+        default: '10 min'
+    },
+
     // // This feild will include rank of product.
     // // If any purchse or review given by user dev will increase by value (code is written like that).
     // // purchase by value (i think every time 1) and review added then increase by +1.
