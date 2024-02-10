@@ -11,7 +11,9 @@ exports.getAllCurrentOrders = async function (req, res) {
 
     try {
 
-        let validStatusOfOrder = ["RECEIVED", "PROCESSING"]
+        let validStatusOfOrder = ["RECEIVED", "PROCESSING" , "ON_TABLE" , "COMPLETED" , 'CANCELED']
+
+        // let validStatusOfOrder = ["RECEIVED", "PROCESSING"]
 
         let getCurOrderData = await orderModel.find({ status: { $in: validStatusOfOrder } })
             .sort({ updatedAt: -1 })

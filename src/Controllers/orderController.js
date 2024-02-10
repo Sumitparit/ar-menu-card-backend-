@@ -37,7 +37,7 @@ async function createNewOrder(req, res) {
         // console.log('Current order ---> ', findCurrentOrder)
 
 
-        if (findCurrentOrder) {
+        if (findCurrentOrder && (findCurrentOrder.status === "RECEIVED" || findCurrentOrder.status === "PROCESSING" || findCurrentOrder.status === "ON_TABLE")) {
 
             findCurrentOrder.cartData = [...cartData, ...findCurrentOrder.cartData]
 
