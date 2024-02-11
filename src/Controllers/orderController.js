@@ -32,18 +32,24 @@ async function createNewOrder(req, res) {
 
         // // // Now here we can put some current oder logic ---------->
 
-        let findCurrentOrder = await orderModel.findOne({ userId: userId, currentOrder: true })
+        let findCurrentOrder = await orderModel.findOne({ userId: userId, currentOrder: true }).sort({ createdAt : -1})
 
         // console.log('Current order ---> ', findCurrentOrder)
 
 
-        if (findCurrentOrder && (findCurrentOrder.status === "RECEIVED" || findCurrentOrder.status === "PROCESSING" || findCurrentOrder.status === "ON_TABLE")) {
+
+        // RECEIVED" | "PROCESSING" | "ON_TABLE" 
+
+        let arrOfOrderstatus = ["RECEIVED", "PROCESSING", "ON_TABLE"]
+
+
+        if (findCurrentOrder && arrOfOrderstatus.includes(findCurrentOrder.status)) {
 
             findCurrentOrder.cartData = [...cartData, ...findCurrentOrder.cartData]
 
             let updatedOrderData = await findCurrentOrder.save()
 
-            return res.status(200).send({ status: true, message: "New item added in current order.", data: updatedOrderData })
+            return res.status(200).send({ status: true, message: "New item added in current order.", data: updatedOrderData , updated : true })
 
         } else {
 
@@ -68,7 +74,7 @@ async function createNewOrder(req, res) {
 
             // console.log(getUserDetails)
 
-            return res.status(201).send({ status: true, message: "New order created.", data: createNewOrder })
+            return res.status(201).send({ status: true, message: "New order created.", data: createNewOrder , created : true })
         }
 
         // // // final res if no give by some reason.
