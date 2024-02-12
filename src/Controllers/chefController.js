@@ -11,7 +11,7 @@ exports.getAllCurrentOrders = async function (req, res) {
 
     try {
 
-        let validStatusOfOrder = ["RECEIVED", "PROCESSING" , "ON_TABLE" , "COMPLETED" , 'CANCELED']
+        let validStatusOfOrder = ["RECEIVED", "PROCESSING", "ON_TABLE", "COMPLETED", 'CANCELED']
 
         // let validStatusOfOrder = ["RECEIVED", "PROCESSING"]
 
@@ -53,11 +53,28 @@ exports.updateOrderData = async function (req, res) {
 
         if (whatUpdate === "chefStatus") {
 
-            const { status, time } = resBody
+            const { status, time, startPreparation } = resBody
+
+
+            // findOrderData.startPreparation = startPreparation
+
+            // // console.log(endPreparation, startPreparation)
 
             if (time) {
                 findOrderData.preparationTime = time
             }
+
+
+            if (status === "PROCESSING") {
+                const { startPreparation } = resBody
+                findOrderData.startPreparation = startPreparation
+            }
+
+            if (status === "ON_TABLE" || status === "COMPLETED" || status === "CANCELED") {
+                const { endPreparation } = resBody
+                findOrderData.endPreparation = endPreparation
+            }
+
 
             findOrderData.status = status
 

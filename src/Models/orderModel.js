@@ -12,6 +12,10 @@ const orderSchema = new mongoose.Schema({
 
     preparationTime: { type: Date, default: Date.now },
 
+    startPreparation: { type: Date, default: Date.now },
+
+    endPreparation: { type: Date, default: Date.now },
+
     totalPrice: { type: Number, required: true, trim: true },
 
     cartData: { type: Array, required: true },
