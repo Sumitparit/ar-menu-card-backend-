@@ -4,6 +4,7 @@ const orderModel = require("../Models/orderModel")
 const userModel = require("../Models/userModel")
 
 
+// // // Create and update controller ----------->
 async function createNewOrder(req, res) {
 
     try {
@@ -32,7 +33,7 @@ async function createNewOrder(req, res) {
 
         // // // Now here we can put some current oder logic ---------->
 
-        let findCurrentOrder = await orderModel.findOne({ userId: userId, currentOrder: true }).sort({ createdAt : -1})
+        let findCurrentOrder = await orderModel.findOne({ userId: userId, currentOrder: true }).sort({ createdAt: -1 })
 
         // console.log('Current order ---> ', findCurrentOrder)
 
@@ -45,11 +46,24 @@ async function createNewOrder(req, res) {
 
         if (findCurrentOrder && arrOfOrderstatus.includes(findCurrentOrder.status)) {
 
+            // // // Some changes when new order created with current order ---->
+            // // // 1. Update cart arr 
+            // // // 2. Update Total Price.
+            // // // 3. Update Status (Should be RECEIVED again)
+
+            // console.log(findCurrentOrder)
+            // console.log(totalPrice, findCurrentOrder.totalPrice)
+            // console.log(totalPrice + findCurrentOrder.totalPrice)
+
+
             findCurrentOrder.cartData = [...cartData, ...findCurrentOrder.cartData]
+            findCurrentOrder.totalPrice = totalPrice + findCurrentOrder.totalPrice
+            findCurrentOrder.status = "RECEIVED"
+
 
             let updatedOrderData = await findCurrentOrder.save()
 
-            return res.status(200).send({ status: true, message: "New item added in current order.", data: updatedOrderData , updated : true })
+            return res.status(200).send({ status: true, message: "New item added in current order.", data: updatedOrderData, updated: true })
 
         } else {
 
@@ -74,7 +88,7 @@ async function createNewOrder(req, res) {
 
             // console.log(getUserDetails)
 
-            return res.status(201).send({ status: true, message: "New order created.", data: createNewOrder , created : true })
+            return res.status(201).send({ status: true, message: "New order created.", data: createNewOrder, created: true })
         }
 
         // // // final res if no give by some reason.
