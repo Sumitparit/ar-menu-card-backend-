@@ -242,6 +242,7 @@ io.on('connection', async (socket) => {
 
     // console.log(socket.handshake.headers.cookie)
     // console.log(socket.handshake.headers.cookie.split("="))
+    // console.log(socket.handshake)
 
 
     let userData = false
@@ -249,30 +250,30 @@ io.on('connection', async (socket) => {
 
     // // // Getting token in socket variabe ---->
 
-    if (socket.handshake.headers.cookie) {
-        // // // If token coming in cookie -------->
+    // if (socket.handshake.headers.cookie) {
+    //     // // // If token coming in cookie -------->
 
-        let allCookies = socket.handshake.headers.cookie.split(";")
+    //     let allCookies = socket.handshake.headers.cookie.split(";")
 
-        // console.log(allCookies)
+    //     // console.log(allCookies)
 
-        let token = false
+    //     let token = false
 
-        for (let singleCookei of allCookies) {
-            // console.log(singleCookei.split("="))
+    //     for (let singleCookei of allCookies) {
+    //         // console.log(singleCookei.split("="))
 
-            let arrOfCookie = singleCookei.split("=")
+    //         let arrOfCookie = singleCookei.split("=")
 
-            if (arrOfCookie[0] === "token") {
-                token = arrOfCookie[1]
-                break
-            }
+    //         if (arrOfCookie[0] === "token") {
+    //             token = arrOfCookie[1]
+    //             break
+    //         }
 
-        }
+    //     }
 
-        userData = await getUserDataFromToken(token)
-    }
-    else {
+    //     userData = await getUserDataFromToken(token)
+    // }
+    // else {
 
         // // // Sending cookie manually in auth of socket
 
@@ -284,9 +285,9 @@ io.on('connection', async (socket) => {
 
             token = socket.handshake.auth.token
             userData = await getUserDataFromToken(token)
-        }
 
-    }
+            // console.log(token)
+        }
 
 
     // console.log(userData)
@@ -297,11 +298,10 @@ io.on('connection', async (socket) => {
 
         if (userData.role === 'chef') {
             socket.join('chefs');
-            console.log(`The chef(${userData.firstName}) connected ✅`);
+            console.log(`The chef (${userData.firstName}) connected ✅`);
         } else {
-            console.log(`New client(${userData.firstName}) connected ✅`);
+            console.log(`New client (${userData.firstName}) connected ✅`);
         }
-
 
     } else {
         console.log(`New client connected ✅`);
@@ -393,10 +393,11 @@ io.on('connection', async (socket) => {
 
     // // // This event started by chef to give notification about update order status.
 
+    let i = 0
     socket.on('update-order-status', async (order) => {
 
-
-        // console.log("Getting notification for order", order)
+        ++i
+        console.log("Getting notification for order", order , i)
 
 
 
@@ -404,11 +405,11 @@ io.on('connection', async (socket) => {
 
         let statusOfOrder = order.status
 
-        let orderDoneMsg = 'Status of order changed.'
+        let orderDoneMsg = 'Order done✅'
 
         switch (statusOfOrder) {
             case "RECEIVED":
-                orderDoneMsg = "Order recived.✅"
+                orderDoneMsg = "New order recived.✅"
                 break;
 
             case "PROCESSING":
@@ -465,12 +466,12 @@ io.on('connection', async (socket) => {
 
 
         // // // Notification to user --->
-        io.to(userId).emit('update-order-status-user', { data: order, ...createNewNotiFormate("Order done✅", order.id, userId) });
+        io.to(userId).emit('update-order-status-user', { data: order, ...createNewNotiFormate(`${orderDoneMsg}`, order.id, userId) });
 
 
 
         // // // Back to chef (notification) ---->
-        io.to('chefs').emit('update-order-status-chef', { data: order, ...createNewNotiFormate("New order recived.", order.id, userId) });
+        io.to('chefs').emit('update-order-status-chef', { data: order, ...createNewNotiFormate(`${orderDoneMsg}`, order.id, userId) });
 
 
         // console.log(order)

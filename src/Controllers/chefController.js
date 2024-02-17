@@ -2,8 +2,6 @@
 const orderModel = require("../Models/orderModel")
 
 
-
-
 exports.getAllCurrentOrders = async function (req, res) {
 
     // res.send("ok ok ")
@@ -30,7 +28,6 @@ exports.getAllCurrentOrders = async function (req, res) {
     }
 
 }
-
 
 
 
@@ -72,7 +69,7 @@ exports.updateOrderData = async function (req, res) {
 
             if (status === "ON_TABLE" || status === "COMPLETED" || status === "CANCELED") {
                 const { endPreparation } = resBody
-                findOrderData.endPreparation = endPreparation
+                findOrderData.endPreparation = endPreparation || null
             }
 
 
