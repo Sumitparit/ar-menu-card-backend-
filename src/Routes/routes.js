@@ -85,7 +85,7 @@ router.get("/auth/google/callback", passport.authenticate("google", {
         // let url = `${process.env.FRONTEND_URL}${process.env.HASH}user-login${process.env.HASH}${req.user.token}${process.env.HASH}newuser`
 
 
-        let queryUrl = `${process.env.FRONTEND_URL}${process.env.HASH}user-login?token=${req.user.token}`
+        let queryUrl = `${process.env.FRONTEND_URL}${process.env.HASH || "/"}user-login?token=${req.user.token}`
 
 
 
