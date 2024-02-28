@@ -76,13 +76,23 @@ router.get("/auth/google/callback", passport.authenticate("google", {
 
         // console.log("Login Done ------->")
 
-        let url = `${process.env.FRONTEND_URL}/user-login/${req.user.token}/newuser`
+        // let url = `${process.env.FRONTEND_URL}/user-login/${req.user.token}/newuser`
+
+            
+        // console.log(process.env.HASH)
+        // console.log(process.env.FRONTEND_URL)
+
+        // let url = `${process.env.FRONTEND_URL}${process.env.HASH}user-login${process.env.HASH}${req.user.token}${process.env.HASH}newuser`
 
 
-        // url = `${process.env.FRONTEND_URL}/`
+        let queryUrl = `${process.env.FRONTEND_URL}${process.env.HASH}user-login?token=${req.user.token}`
 
 
-        res.redirect(url)
+
+        // let url = `${process.env.FRONTEND_URL}/`
+
+
+        res.redirect(queryUrl)
 
     }
     else {
