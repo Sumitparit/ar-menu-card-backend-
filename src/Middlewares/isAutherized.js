@@ -127,6 +127,30 @@ exports.isChef = async function (req, res, next) {
     }
 }
 
+exports.isAdmin = async function (req, res, next) {
+    try {
+
+        if (!req.tokenUserData) return res.status(400).send({ status: false, message: "Bad Request.(Please logIn)" })
+
+        let adminRole = "admin"
+
+        if (req.tokenUserData.role !== adminRole) {
+            return res.status(400).send({ status: false, message: "Only chef can access this api." })
+        } else {
+            console.log(`${req.tokenUserData.firstName} is admin.`)
+        }
+
+
+
+        // console.log(validRole.includes(req.tokenUserData.role))
+
+        next()
+
+    } catch (err) {
+        return res.status(500).send({ status: false, message: err.message })
+    }
+}
+
 
 
 

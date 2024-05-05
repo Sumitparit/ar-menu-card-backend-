@@ -20,7 +20,11 @@ const indexRouter = require("./src/Routes/routes")
 
 // // TODO : change mongoDB string below --------->
 
-mongoose.connect(process.env.DB_STRING)
+const dbString = process.env.DB_STRING
+// const dbString = "mongodb://pranavkumbhar727:Prnv09mongo@cluster0.jd0soty.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+// const dbString = "mongodb://pranavkumbhar727:Prnv09mongo@cluster0.jd0soty.mongodb.net/"
+
+mongoose.connect(dbString)
     .then(() => console.log("Mongoose connected successfully"))
     .catch((err) => { console.log("An error occured :- " + err) })
 
@@ -275,19 +279,19 @@ io.on('connection', async (socket) => {
     // }
     // else {
 
-        // // // Sending cookie manually in auth of socket
+    // // // Sending cookie manually in auth of socket
 
-        let token = false
+    let token = false
 
-        // console.log(socket.handshake.auth.token)
+    // console.log(socket.handshake.auth.token)
 
-        if (socket.handshake && socket.handshake.auth && socket.handshake.auth.token) {
+    if (socket.handshake && socket.handshake.auth && socket.handshake.auth.token) {
 
-            token = socket.handshake.auth.token
-            userData = await getUserDataFromToken(token)
+        token = socket.handshake.auth.token
+        userData = await getUserDataFromToken(token)
 
-            // console.log(token)
-        }
+        // console.log(token)
+    }
 
 
     // console.log(userData)
@@ -397,7 +401,7 @@ io.on('connection', async (socket) => {
     socket.on('update-order-status', async (order) => {
 
         ++i
-        console.log("Getting notification for order", order , i)
+        console.log("Getting notification for order", order, i)
 
 
 

@@ -2,7 +2,7 @@
 const router = require("express").Router()
 const passport = require('passport');
 
-const { isAuthorized, isChef } = require("../Middlewares/isAutherized")
+const { isAuthorized, isChef, isAdmin } = require("../Middlewares/isAutherized")
 
 const { createProduct, fetchAllProducts, fetchOneProduct } = require("../Controllers/productController")
 
@@ -12,6 +12,7 @@ const { getUserData, updateManyNotiToSeen } = require("../Controllers/userContro
 
 const { getAllCurrentOrders, updateOrderData } = require("../Controllers/chefController")
 
+const { updateProduct } = require("../Controllers/adminController")
 
 
 /* GET home page. */
@@ -23,7 +24,7 @@ router.get('/', function (req, res) {
 
 
 
-// // // Create product ------->
+// // // Create product -------------------------------------------------------------------------->
 
 router.post("/create-product", createProduct)
 
@@ -35,7 +36,7 @@ router.get("/one-product/:productId", fetchOneProduct)
 
 
 
-// // // User Apis -------------------->
+// // // User Apis ---------------------------------------------------------------------------------->
 
 // // // Routes for login by Google ----->
 // // // Scope should given which scope of data you want to get like :- email and profile --->
@@ -78,7 +79,7 @@ router.get("/auth/google/callback", passport.authenticate("google", {
 
         // let url = `${process.env.FRONTEND_URL}/user-login/${req.user.token}/newuser`
 
-            
+
         // console.log(process.env.HASH)
         // console.log(process.env.FRONTEND_URL)
 
@@ -111,24 +112,30 @@ router.get("/login/failed", (req, res) => {
 })
 
 
-// // Check user data token --->
+// // Check user data token ------------------------------------------------------------------------->
 router.get("/userDataByToken", isAuthorized, getUserData)
 
 router.put("/updateManyNotiToSeen", isAuthorized, updateManyNotiToSeen)
 
 
 
-// // // Order Api --------------->
+// // // Order Api ----------------------------------------------------------------------------------->
 router.post("/createNewOrder", isAuthorized, createNewOrder)
 
 
 
 
-// // // Chef Apis ------------------>
+// // // Chef Apis --------------------------------------------------------------------------------->
 router.get("/getAllCurrentOrders", isAuthorized, isChef, getAllCurrentOrders)
 
 
 router.post("/updateOrderData", isAuthorized, updateOrderData)
+
+
+
+// // // Admin Apis ------------------------------------------------------------------------------>
+router.post('/updateProductAdmin', isAuthorized, isAdmin, updateProduct)
+
 
 
 

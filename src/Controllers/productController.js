@@ -1,6 +1,6 @@
 const productModel = require("../Models/productModel")
 
-
+// // // Move below controller into admin api (If user is admin then only he will able to create new product) --------->
 exports.createProduct = async function (req, res) {
 
     try {
@@ -55,6 +55,9 @@ exports.fetchOneProduct = async function (req, res) {
 
         // console.log(productId)
 
+        if (!productId) {
+            return res.status(400).send({ status: false, message: `ProductID is not given in path params` })
+        }
 
 
         const fetchProduct = await productModel.findOne({ id: productId })
