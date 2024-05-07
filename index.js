@@ -33,7 +33,7 @@ mongoose.connect(dbString)
 // // // CORS code ---->
 app.use(cors({
     credentials: true,
-    origin: [`${process.env.FRONTEND_URL}`]
+    origin: [`${process.env.FRONTEND_URL}`, 'https://restaurant-ar-app2-zx4c.vercel.app/']
 }))
 
 
