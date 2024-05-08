@@ -11,10 +11,12 @@ async function createNewOrder(req, res) {
 
 
         // console.log(req.body)
+        // console.log(req.tokenUserData)
 
-        const { tableNumber, totalPrice, cartData, userId, status } = req.body
 
-        if (!tableNumber || !totalPrice || !cartData || !userId || !status) return res.status(400).send({ status: false, message: "All feilds are mandatory. Check the controller" })
+        const { tableNumber, totalPrice, cartData, status } = req.body
+
+        if (!tableNumber || !totalPrice || !cartData || !status) return res.status(400).send({ status: false, message: "All feilds are mandatory. Check the controller" })
 
         // // // Authorisation to create new order ---->
 
@@ -24,16 +26,18 @@ async function createNewOrder(req, res) {
 
         // console.log(userIdInToken.toString() , userId.toString())
 
-        if (userIdInToken.toString() !== userId.toString()) return res.status(403).send({ status: false, message: "Forbidden to create the order." })
+        // // // Not using now after Razor pay intigration ------------->
+        // if (userIdInToken.toString() !== userId.toString()) return res.status(403).send({ status: false, message: "Forbidden to create the order." })
 
-        let getUserDetails = await userModel.findOne({ id: userId })
+
+        let getUserDetails = await userModel.findOne({ id: userIdInToken })
 
         if (!getUserDetails) return res.status(400).send({ status: false, message: "No user found with given Id." })
 
 
         // // // Now here we can put some current oder logic ---------->
 
-        let findCurrentOrder = await orderModel.findOne({ userId: userId, currentOrder: true }).sort({ createdAt: -1 })
+        let findCurrentOrder = await orderModel.findOne({ userId: userIdInToken, currentOrder: true }).sort({ createdAt: -1 })
 
         // console.log('Current order ---> ', findCurrentOrder)
 
@@ -42,7 +46,6 @@ async function createNewOrder(req, res) {
         // RECEIVED" | "PROCESSING" | "ON_TABLE" 
 
         let arrOfOrderstatus = ["RECEIVED", "PROCESSING", "ON_TABLE"]
-
 
         if (findCurrentOrder && arrOfOrderstatus.includes(findCurrentOrder.status)) {
 
@@ -69,6 +72,7 @@ async function createNewOrder(req, res) {
 
             // // // Adding more keys in req.body
             req.body.customer = getUserDetails._id
+            req.body.userId = getUserDetails.id
 
             let dateNow = Date.now()
             req.body.orderDate = dateNow

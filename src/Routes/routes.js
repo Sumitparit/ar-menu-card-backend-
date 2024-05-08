@@ -14,13 +14,13 @@ const { getAllCurrentOrders, updateOrderData } = require("../Controllers/chefCon
 
 const { updateProduct } = require("../Controllers/adminController")
 
+const { checkout, verifyPayment, checkPayment } = require("../Controllers/paymentController")
+
 
 /* GET home page. */
 router.get('/', function (req, res) {
     res.send("ok texted go now --->")
 });
-
-
 
 
 
@@ -135,6 +135,28 @@ router.post("/updateOrderData", isAuthorized, updateOrderData)
 
 // // // Admin Apis ------------------------------------------------------------------------------>
 router.post('/updateProductAdmin', isAuthorized, isAdmin, updateProduct)
+
+
+// // // RazorPay payment route ---------------------------------->
+
+router.post('/checkout', isAuthorized, checkout)
+
+router.post('/verifyPayment', verifyPayment)
+
+router.get('/getApiKey', isAuthorized, (req, res) => {
+
+    let apiKey = process.env.RAZORPAY_API_KEY
+
+    if (!apiKey) return res.status(400).send({ status: false, message: "Key not found, dev err." })
+
+    res.status(200).send({ status: true, key: apiKey })
+})
+
+
+// // Now check paymet is done or not ???
+
+router.get("/checkPayment", checkPayment)
+
 
 
 

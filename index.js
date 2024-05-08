@@ -6,6 +6,7 @@ const session = require('express-session');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const jwt = require("jsonwebtoken")
+const Razorpay = require('razorpay')
 
 const userModel = require("./src/Models/userModel")
 
@@ -15,7 +16,7 @@ const userModel = require("./src/Models/userModel")
 
 
 const app = express()
-const indexRouter = require("./src/Routes/routes")
+const Routers = require("./src/Routes/routes")
 
 
 // // TODO : change mongoDB string below --------->
@@ -37,14 +38,14 @@ app.use(cors({
 }))
 
 
-// // // UseFull middlewares ------->
+// // // UseFull middlewares for get body in post request  ------->
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 
 
-// // Code for passport and express-session
 
+// // Code for passport and express-session
 app.use(session({
     secret: 'keyboard',
     resave: false, // don't save session if unmodified
@@ -186,7 +187,7 @@ passport.deserializeUser(function (user, cb) {
 
 // // // Index route api ----->
 
-app.use('/', indexRouter);
+app.use('/', Routers);
 
 
 // catch 404 and forward to error handler
