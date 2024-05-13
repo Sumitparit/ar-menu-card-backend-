@@ -32,6 +32,38 @@ exports.updateProduct = async function (req, res) {
             findProductData.name = newName
         }
 
+        else if (whatUpdate === "customization") {
+            const { newCustomization } = resBody
+
+            // console.log(newCustomization)
+
+
+
+            for (let key in findProductData.customizations) {
+
+                if (key === newCustomization.customName) {
+
+                    if (findProductData.customizations[key].length > 0) {
+
+                        for (let i = 0; i < findProductData.customizations[key].length; i++) {
+
+                            if (findProductData.customizations[key][i].name === newCustomization.typeName) {
+                                findProductData.customizations[key][i].additionalPrice = newCustomization.addPrice
+
+                            }
+
+                        }
+
+                    }
+
+
+                }
+
+            }
+
+
+
+        }
         else {
 
         }
