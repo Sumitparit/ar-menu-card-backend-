@@ -120,7 +120,7 @@ exports.verifyPayment = async (req, res) => {
 exports.checkPayment = async (req, res) => {
     try {
 
-        console.log(req.query)
+        // console.log(req.query)
 
         let orderId = req.query.orderId
 

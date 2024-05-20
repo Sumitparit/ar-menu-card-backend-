@@ -4,7 +4,7 @@ const passport = require('passport');
 
 const { isAuthorized, isChef, isAdmin } = require("../Middlewares/isAutherized")
 
-const { createProduct, fetchAllProducts, fetchOneProduct } = require("../Controllers/productController")
+const { createProduct, fetchAllProducts, fetchOneProduct , searchByText } = require("../Controllers/productController")
 
 const { createNewOrder } = require("../Controllers/orderController")
 
@@ -33,6 +33,11 @@ router.get("/all-product", fetchAllProducts)
 
 
 router.get("/one-product/:productId", fetchOneProduct)
+
+// // Get product by SearchText ----->
+
+router.get("/searchText" , searchByText)
+
 
 
 
