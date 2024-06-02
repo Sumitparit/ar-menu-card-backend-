@@ -34,7 +34,13 @@ mongoose.connect(dbString)
 // // // CORS code ---->
 app.use(cors({
     credentials: true,
-    origin: [`${process.env.FRONTEND_URL}`, 'https://ar.vrworld.services', 'https://restaurant-ar-app2-zx4c.vercel.app', 'https://ar-menu-third.vercel.app']
+    origin: [
+        `${process.env.FRONTEND_URL}`,
+        'https://ar.vrworld.services',
+        'https://restaurant-ar-app2-zx4c.vercel.app',
+        'https://ar-menu-third.vercel.app',
+        'http://localhost:5173'
+    ]
 }))
 
 
