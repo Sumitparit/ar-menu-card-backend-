@@ -61,7 +61,7 @@ exports.fetchOneProduct = async function (req, res) {
 
 
         const fetchProduct = await productModel.findOne({ id: productId })
-            .select("-_id -__v -updatedAt -createdAt -isDeleted ")
+            .select("-_id -__v -updatedAt -createdAt ")
 
         // // // TODO populate the review section here -------->
 
@@ -71,7 +71,7 @@ exports.fetchOneProduct = async function (req, res) {
         }
 
         if (fetchProduct.isDeleted) {
-            return res.status(404).send({ status: false, message: `No product found.Product is deleted now.` })
+            return res.status(404).send({ status: false, message: `Product is deleted right now.` })
         }
 
         res.status(200).send({ status: true, message: `Fetched successfully`, data: fetchProduct })
