@@ -31,7 +31,14 @@ exports.createProduct = async function (req, res) {
 exports.fetchAllProducts = async function (req, res) {
     try {
 
-        let findAllProducts = await productModel.find({ isDeleted: false }).sort({ totelPurchases: 1, name: 1 }).select("-_id -__v -updatedAt -createdAt -isDeleted -dislikedUserIds -likedUserIds -dislikes -likes -option")
+
+        // console.log(req.headers)
+
+        let productFor = req.headers["productfor"] || "general"
+
+        // console.log(productFor)
+
+        let findAllProducts = await productModel.find({ isDeleted: false, productFor: productFor }).sort({ totelPurchases: 1, name: 1 }).select("-_id -__v -updatedAt -createdAt -isDeleted -dislikedUserIds -likedUserIds -dislikes -likes -option")
 
         if (findAllProducts.length <= 0) {
             return res.status(404).send({ status: false, message: `No data found. please connect to developer` })
